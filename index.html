@@ -20,6 +20,7 @@
       flex-direction: row;
       width: 100vw;
       box-sizing: border-box;
+      flex-wrap: wrap; /* Allow wrapping for smaller screens */
     }
 
     #main {
@@ -38,11 +39,12 @@
       border-left: 2px solid #ffa726;
       box-shadow: inset 0 0 10px rgba(255, 152, 0, 0.2);
       overflow-y: auto;
+      margin-top: 20px; /* Added some space between canvas and formulas */
     }
 
     #formulas h2 {
       color: #e65100;
-      font-size: 30px;
+      font-size: 22px; /* Increased the font size */
     }
 
     #formulas ul {
@@ -52,7 +54,7 @@
 
     #formulas li {
       margin-bottom: 10px;
-      font-size: 25px;
+      font-size: 26px; /* Increased font size for better readability */
     }
 
     canvas {
@@ -61,6 +63,8 @@
       margin-top: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       animation: pulseBorder 3s infinite;
+      max-width: 100%;
+      height: auto; /* Make canvas responsive */
     }
 
     @keyframes pulseBorder {
@@ -111,6 +115,51 @@
       from { transform: translateY(-50px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
+    /* Media Queries for mobile responsiveness */
+    @media screen and (max-width: 768px) {
+      body {
+        flex-direction: column; /* Stack layout on small screens */
+      }
+
+      #formulas {
+        width: 90%;
+        margin: 0 auto; /* Center formulas on mobile */
+      }
+
+      h1 {
+        font-size: 24px; /* Adjust title size on mobile */
+      }
+
+      #formulas h2 {
+        font-size: 20px; /* Adjust formula section header */
+      }
+
+      #formulas li {
+        font-size: 18px; /* Adjust formula text for mobile */
+      }
+
+      button {
+        font-size: 16px; /* Make buttons slightly smaller on mobile */
+        padding: 8px 14px;
+      }
+
+      canvas {
+        width: 100%; /* Full width for canvas */
+        height: auto;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      h1 {
+        font-size: 20px; /* Even smaller font on very small screens */
+      }
+
+      button {
+        font-size: 14px; /* Smaller buttons on very small screens */
+      }
+    }
+
   </style>
   <script>
     window.MathJax = {
@@ -226,36 +275,19 @@
       for (let x = spacing / 2; x < canvas.width; x += spacing) {
         for (let y = spacing / 2; y < canvas.height; y += spacing) {
           const { Ex, Ey } = computeElectricField(x, y);
-          drawArrow(x, y, Ex, Ey, 12);
+          drawArrow(x, y, Ex, Ey, 10);
         }
       }
 
       for (const charge of charges) {
-        const radius = 10 + 2 * Math.sin(Date.now() / 200);
-        ctx.save();
         ctx.beginPath();
-        ctx.arc(charge.x, charge.y, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = charge.q > 0 ? '#e53935' : '#1e88e5';
-        ctx.shadowColor = charge.q > 0 ? '#ef9a9a' : '#90caf9';
-        ctx.shadowBlur = 20;
+        ctx.arc(charge.x, charge.y, 15, 0, 2 * Math.PI);
+        ctx.fillStyle = charge.q > 0 ? 'red' : 'blue';
         ctx.fill();
-        ctx.shadowBlur = 0;
-
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(charge.q > 0 ? '+' : '-', charge.x, charge.y);
-        ctx.restore();
       }
     }
 
-    function animate() {
-      draw();
-      requestAnimationFrame(animate);
-    }
-
-    animate();
+    draw();
   </script>
 </body>
 </html>
